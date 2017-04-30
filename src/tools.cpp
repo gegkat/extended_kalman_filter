@@ -70,7 +70,9 @@ void Tools::CalculateJacobian(const VectorXd& x_state, MatrixXd& Hj, VectorXd& h
       py*(vx*py - vy*px)/c3, px*(px*vy - py*vx)/c3, px/c2, py/c2;
 
   double rho = c2;
-  double phi = atan(py/px);
+  double phi = atan2(py, px);
+  cout << "       x predict: " << px << ", " << py << ", " << vx << ", " << vy << endl;
+  cout << "       phi: " << phi << " rad, " << phi*180/3.1415926 << " deg" << endl;
   double rho_dot = (px*vx + py*vy) / rho;
   h << rho, phi, rho_dot;
 
