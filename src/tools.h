@@ -25,8 +25,10 @@ public:
   */
   void CalculateJacobian(const Eigen::VectorXd& x_state, Eigen::MatrixXd& Hj, Eigen::VectorXd& h);
 
-  Eigen::VectorXd h(const Eigen::VectorXd& x_state);
-
+  /**
+  * function to force x between -pi and pi
+  */
+  float ModPi(float x);
 
 };
 

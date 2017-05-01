@@ -139,9 +139,6 @@ int main(int argc, char* argv[]) {
 
     fusionEKF.ProcessMeasurement(measurement_pack_list[k]);
     
-    cout << k << ":  x_ = " << fusionEKF.ekf_.x_(0) << ", " << fusionEKF.ekf_.x_(1) << ", " << fusionEKF.ekf_.x_(2) << ", " << fusionEKF.ekf_.x_(3);
-    //cout << fusionEKF.ekf_.x_(0) << endl;
-
     // output the estimation
     out_file_ << fusionEKF.ekf_.x_(0) << "\t";
     out_file_ << fusionEKF.ekf_.x_(1) << "\t";
@@ -153,16 +150,13 @@ int main(int argc, char* argv[]) {
       // output the estimation
       out_file_ << measurement_pack_list[k].raw_measurements_(0) << "\t";
       out_file_ << measurement_pack_list[k].raw_measurements_(1) << "\t";
-      //cout << ", LASER" << ", " << measurement_pack_list[k].raw_measurements_(0) << ", " << measurement_pack_list[k].raw_measurements_(1);
     } else if (measurement_pack_list[k].sensor_type_ == MeasurementPackage::RADAR) {
       // output the estimation in the cartesian coordinates
       float ro = measurement_pack_list[k].raw_measurements_(0);
       float phi = measurement_pack_list[k].raw_measurements_(1);
       out_file_ << ro * cos(phi) << "\t"; // p1_meas
       out_file_ << ro * sin(phi) << "\t"; // ps_meas
-      //cout << ", RADAR" << ", " << measurement_pack_list[k].raw_measurements_(0) << ", " << measurement_pack_list[k].raw_measurements_(1);
     }
-    cout << endl;
 
     // output the ground truth packages
     out_file_ << gt_pack_list[k].gt_values_(0) << "\t";

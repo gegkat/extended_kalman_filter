@@ -1,5 +1,6 @@
 #include <iostream>
 #include "tools.h"
+#include "math.h"
 
 using Eigen::VectorXd;
 using Eigen::MatrixXd;
@@ -47,60 +48,36 @@ VectorXd Tools::CalculateRMSE(const vector<VectorXd> &estimations,
 void Tools::CalculateJacobian(const VectorXd& x_state, MatrixXd& Hj, VectorXd& h) {
 
 
-  //recover state parameters
+  // Recover state parameters
   float px = x_state(0);
   float py = x_state(1);
   float vx = x_state(2);
   float vy = x_state(3);
 
-  //pre-compute a set of terms to avoid repeated calculation
+  // Pre-compute a set of terms to avoid repeated calculation
   float c1 = px*px+py*py;
   float c2 = sqrt(c1);
   float c3 = (c1*c2);
 
-  //check division by zero
+  // Check division by zero
   if(fabs(c1) < 0.0001){
     cout << "CalculateJacobian () - Error - Division by Zero" << endl;
     return;
   }
 
-  //compute the Jacobian matrix
+  // Compute the Jacobian matrix
   Hj << (px/c2), (py/c2), 0, 0,
       -(py/c1), (px/c1), 0, 0,
       py*(vx*py - vy*px)/c3, px*(px*vy - py*vx)/c3, px/c2, py/c2;
 
-  double rho = c2;
-  double phi = atan2(py, px);
-  cout << "       x predict: " << px << ", " << py << ", " << vx << ", " << vy << endl;
-  cout << "       phi: " << phi << " rad, " << phi*180/3.1415926 << " deg" << endl;
-  double rho_dot = (px*vx + py*vy) / rho;
+  // Compute the h vector
+  float rho = c2;
+  float phi = atan2(py, px);
+  float rho_dot = (px*vx + py*vy) / rho;
   h << rho, phi, rho_dot;
 
 }
 
-VectorXd Tools::h(const VectorXd& x_state) {
-
-  VectorXd h(3);
-  //recover state parameters
-  float px = x_state(0);
-  float py = x_state(1);
-  float vx = x_state(2);
-  float vy = x_state(3);
-
-  //pre-compute a set of terms to avoid repeated calculation
-  float c1 = px*px+py*py;
-  float c2 = sqrt(c1);
-  float c3 = (c1*c2);
-
-  //check division by zero
-  if(fabs(c2) < 0.0001){
-    cout << "h () - Error - Division by Zero" << endl;
-    return h;
-  }
-
-  double rho = c2;
-  double phi = atan(py/px);
-  double rho_dot = (px*vx + py*vy) / rho;
-  h << rho, phi, rho_dot;
-  return h;
+float Tools::ModPi(float x) {
+  return fmodf((x + M_PI), 2*M_PI) - M_PI;
 }
